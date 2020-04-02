@@ -24,6 +24,9 @@ public class Movie {
 //    year: String (bonus: set derived from released)
     @Column(name = "year")
     private String year;
+    //    year: String (bonus: set derived from released)
+    @Column(name = "rating")
+    private String rating;
 //    released: LocalDate
     @Column(name = "released")
     private LocalDate released;
@@ -34,6 +37,7 @@ public class Movie {
         this.imdbId = imdbId;
         this.actors = actors;
         this.director = director;
+        this.rating = "0";
         this.title = title;
         this.year = year;
         this.released = released;
@@ -95,6 +99,13 @@ public class Movie {
         this.released = released;
     }
 
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
