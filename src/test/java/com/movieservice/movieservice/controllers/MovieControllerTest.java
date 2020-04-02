@@ -2,6 +2,7 @@ package com.movieservice.movieservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.movieservice.movieservice.entities.Movie;
+import com.movieservice.movieservice.services.MovieService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
