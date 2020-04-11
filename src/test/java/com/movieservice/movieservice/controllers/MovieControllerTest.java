@@ -2,6 +2,7 @@ package com.movieservice.movieservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.movieservice.movieservice.entities.Movie;
+import com.movieservice.movieservice.repositories.MovieRepository;
 import com.movieservice.movieservice.services.MovieService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,8 @@ class MovieControllerTest {
 
     @MockBean
     MovieService service;
+    @MockBean
+    MovieRepository repository;
 
     @BeforeEach
     void setup() {
@@ -63,8 +66,7 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$.title").value(movie.getTitle()))
                 .andExpect(jsonPath("$.director").value(movie.getDirector()))
                 .andExpect(jsonPath("$.actors").value(movie.getActors()))
-                .andExpect(jsonPath("$.year").value(movie.getYear()))
-                .andExpect(jsonPath("$.released").value(movie.getReleased()));
+                .andExpect(jsonPath("$.year").value(movie.getYear()));
     }
 //    GET: all movies in the database
     @Test
@@ -107,49 +109,55 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
                 .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
     }
-//    GET: Search for movies by actor (optional), director (optional), genre (optional), title containing a search string (required)
-//    @Test
-//    void getMoviesByActor() throws Exception {
-//        movie.setId(1L);
-//        String actorQuery = "Cate Blanchett";
-//        String json = mapper.writeValueAsString(movie);
-//        when(service.findAllByTitle(movie.getTitle())).thenReturn(movie);
-//        mvc.perform(get(url)
-//                .param("actor", actorQuery)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(movies.size())))
-//                .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
-//                .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
-//    }
-//    PATCH: add or update a star rating for a movie (1 - 5)
-//    @Test
-//    void updateMovieRating() throws Exception {
-//        movie.setId(1L);
-//        movie.setRating("5");
-//        String json = mapper.writeValueAsString(movie);
-//        when(service.updateMovieRating(movie.getId())).thenReturn(movie);
-//        mvc.perform(patch(url + movie.getId())
-//                .param("rating", "5")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(movies.size())))
-//                .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
-//                .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
-//    }
-////    DELETE
-//    @Test
-//    void deleteMovieById() throws Exception {
-//        movie.setId(1L);
-//        String json = mapper.writeValueAsString(movie);
-//        when(service.delete(ArgumentMatchers.any(Long.class))).thenReturn(true);
-//        mvc.perform(patch(url + movie.getId())
-//                .param("rating", "5")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(movies.size())))
-//                .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
-//                .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
-//        verify(service).delete(1L);
-//    }
+  //  GET: Search for movies by actor (optional), director (optional), genre (optional), title containing a search string (required)
+    @Test
+    void getMoviesByActor() throws Exception {
+        movie.setId(1L);
+        ArrayList<Movie> movies = new ArrayList<>();
+        movies.add(movie);
+        service.save(movie);
+        String actorQuery = "Cate Blanchett";
+        String json = mapper.writeValueAsString(movie);
+        when(repository.findByActor(actorQuery)).thenReturn(movies);
+        mvc.perform(get(url)
+                .param("actor", actorQuery)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(movies.size())))
+                .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
+                .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
+    }
+  //  PATCH: add or update a star rating for a movie (1 - 5)
+    @Test
+    void updateMovieRating() throws Exception {
+        movie.setId(1L);
+        movie.setRating("5");
+        ArrayList<Movie> movies = new ArrayList<>();
+        movies.add(movie);
+        String json = mapper.writeValueAsString(movie);
+        when(service.updateMovieRating(movie.getId(), "5")).thenReturn(movie);
+        mvc.perform(patch(url + movie.getId())
+                .param("rating", "5")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(movies.size())))
+                .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
+                .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
+    }
+//    DELETE
+    @Test
+    void deleteMovieById() throws Exception {
+        movie.setId(1L);
+        ArrayList<Movie> movies = new ArrayList<>();
+        movies.add(movie);
+        when(service.delete(ArgumentMatchers.any(Long.class))).thenReturn(true);
+        mvc.perform(patch(url + movie.getId())
+                .param("rating", "5")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(movies.size())))
+                .andExpect(jsonPath("$[0].title").value(movie.getTitle()))
+                .andExpect(jsonPath("$[0].imdbId").value(movie.getImdbId()));
+        verify(service).delete(1L);
+    }
 }

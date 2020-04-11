@@ -32,9 +32,50 @@ public class MovieService {
             }
         }
 
-        public void delete(Long id) {
+        public boolean delete(Long id) {
             if(repository.existsById(id)){
                 repository.deleteById(id);
+                return true;
             }
+            return false;
+        }
+
+    public Movie updateMovieRating(Long id, String rating) {
+        if(repository.existsById(id)){
+            return repository.updateMovieRating(id, rating);
+        }else {
+            return null;
         }
     }
+
+    public Movie getMovieById(Long id) {
+        return repository.findByid(id);
+    }
+
+    public ArrayList<Movie> getMoviesByActor(String actorQuery) {
+        String queryString = "%" + actorQuery + "%";
+        return repository.findByActor(queryString);
+    }
+
+    public ArrayList<Movie> getMoviesByTitle(String title) {
+        String queryString = "%" + title + "%";
+        return repository.findByActor(queryString);
+    }
+
+    public Movie getMovieByImdbId(String imdbId) {
+        return repository.findByimdbId(imdbId);
+    }
+
+    public ArrayList<Movie> getAllMovies() {
+        return repository.findAll();
+    }
+
+    public Object findAllByTitle(String title) {
+        String queryString = "%" + title + "%";
+        return repository.findByActor(queryString);
+    }
+
+    public Object findByImdbId(String imdbId) {
+        return repository.findByimdbId(imdbId);
+    }
+}
