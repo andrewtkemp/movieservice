@@ -26,7 +26,9 @@ public class MovieService {
         }
         public Movie updateMovieById(Long id, Movie movie) {
             if(repository.existsById(id)){
-                return repository.save(movie);
+                Movie updated = repository.findByid(id);
+                updated.setRating(movie.getRating());
+                return repository.save(updated);
             }else {
                 return null;
             }
@@ -39,43 +41,4 @@ public class MovieService {
             }
             return false;
         }
-
-    public Movie updateMovieRating(Long id, String rating) {
-        if(repository.existsById(id)){
-            return repository.updateMovieRating(id, rating);
-        }else {
-            return null;
-        }
-    }
-
-    public Movie getMovieById(Long id) {
-        return repository.findByid(id);
-    }
-
-    public ArrayList<Movie> getMoviesByActor(String actorQuery) {
-        String queryString = "%" + actorQuery + "%";
-        return repository.findByActor(queryString);
-    }
-
-    public ArrayList<Movie> getMoviesByTitle(String title) {
-        String queryString = "%" + title + "%";
-        return repository.findByActor(queryString);
-    }
-
-    public Movie getMovieByImdbId(String imdbId) {
-        return repository.findByimdbId(imdbId);
-    }
-
-    public ArrayList<Movie> getAllMovies() {
-        return repository.findAll();
-    }
-
-    public Object findAllByTitle(String title) {
-        String queryString = "%" + title + "%";
-        return repository.findByActor(queryString);
-    }
-
-    public Object findByImdbId(String imdbId) {
-        return repository.findByimdbId(imdbId);
-    }
 }
