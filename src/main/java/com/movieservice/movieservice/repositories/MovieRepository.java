@@ -19,4 +19,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     ArrayList<Movie> findByActor(String actorQuery);
     @Query(value = "SELECT * FROM movies m WHERE m.imdbId = ?1", nativeQuery=true)
     Movie findByimdbId(String queryString);
+
+    ArrayList<Movie> findByTitle(String title);
 }
